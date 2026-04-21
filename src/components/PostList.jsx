@@ -1,46 +1,19 @@
-import { useState, useEffect } from 'react';
+import useFetch from '../hooks/useFetch';
 import LoadingSpinner from './shared/LoadingSpinner';
 import ErrorMessage from './shared/ErrorMessage';
 
 function PostList() {
-    const [posts, setPosts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    
-    const fetchPosts = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            const response = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=10');
-            
-            if (!response.ok) {
-                throw new Error('Failed to fetch posts from the server.');
-            }
-            
-            const data = await response.json();
-            setPosts(data);
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-    
-    useEffect(() => {
-        fetchPosts();
-    }, []);
+    const { data: posts, loading, error } = useFetch('https://jsonplaceholder.typicode.com/posts?_limit=10');
 
-    // Using our new shared components
-    if (loading) return <LoadingSpinner text="Fetching latest posts..." />;
-    if (error) return <ErrorMessage message={error} onRetry={fetchPosts} />;
+    if (loading) return <LoadingSpinner />;
+    if (error) return <ErrorMessage message={error} />;
 
     return (
         <div style={{ padding: '20px' }}>
-            <h2>Latest Community Posts</h2>
+            <h2>Community Posts (via Custom Hook)</h2>
             {posts.map(post => (
-                <div key={post.id} style={{ marginBottom: '15px', padding: '10px', border: '1px solid #ddd' }}>
-                    <h3>{post.title}</h3>
-                    <p>{post.body}</p>
+                <div key={post.id} style={{ borderBottom: '1px solid #ccc', padding: '10px' }}>
+                    <h4>{post.title}</h4>
                 </div>
             ))}
         </div>
