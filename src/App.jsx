@@ -1,5 +1,5 @@
-import PostList from './components/PostList';
 import { useState, useEffect } from 'react';
+import PostList from './components/PostList';
 
 function App() {
   // State for all 17.1 Exercises
