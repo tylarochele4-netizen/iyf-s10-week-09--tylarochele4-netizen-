@@ -44,6 +44,11 @@ function App() {
       backgroundColor: theme === 'dark' ? '#333' : '#fff',
       color: theme === 'dark' ? '#fff' : '#000',
       transition: 'all 0.3s ease' 
+  <div>
+    <h1>Week 09: React Advanced</h1>
+    <PostList />  {/* Add this line here */}
+  </div>
+);   
     }}>
       <h1>Task 17.1: All Exercises Complete</h1>
       
