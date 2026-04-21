@@ -1,3 +1,4 @@
+import './App.css';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import useLocalStorage from './hooks/useLocalStorage'; // Import your custom hook
 import Home from './pages/Home';
