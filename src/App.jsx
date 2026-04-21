@@ -1,74 +1,54 @@
-import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import useLocalStorage from './hooks/useLocalStorage'; // Import your custom hook
+import Home from './pages/Home';
+import About from './pages/About';
+import CreatePost from './pages/CreatePost';
 import PostList from './components/PostList';
+import Button from './components/shared/Button';
 
 function App() {
-  // State for all 17.1 Exercises
-  const [count, setCount] = useState(0);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const [seconds, setSeconds] = useState(0);
-  const [theme, setTheme] = useState(() => {
-    // Pattern 3: Get initial state from localStorage
-    return localStorage.getItem('theme') || 'light';
-  });
+  // Use your custom hook from Task 18.1
+  const [theme, setTheme] = useLocalStorage('theme', 'light');
 
-  // Exercise 1: document.title sync (Runs when count changes)
-  useEffect(() => {
-    document.title = `Count: ${count}`;
-  }, [count]);
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
 
-  // Exercise 2 - Pattern 2: Window Resize Listener
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Exercise 2 - Pattern 3: localStorage sync
-  useEffect(() => {
-    localStorage.setItem('theme', theme);
-    document.body.className = theme; // Applies 'light' or 'dark' class to body
-  }, [theme]);
-
-  // Exercise 1 - Cleanup: The Timer
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSeconds(prev => prev + 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
+  const appStyle = {
+    minHeight: '100vh',
+    backgroundColor: theme === 'dark' ? '#1a1a1a' : '#ffffff',
+    color: theme === 'dark' ? '#ffffff' : '#000000',
+    fontFamily: 'sans-serif',
+    transition: 'all 0.3s ease'
+  };
 
   return (
-    <div style={{ 
-      padding: '40px', 
-      minHeight: '100vh',
-      backgroundColor: theme === 'dark' ? '#333' : '#fff',
-      color: theme === 'dark' ? '#fff' : '#000',
-      transition: 'all 0.3s ease' 
-  <div>
-    <h1>Week 09: React Advanced</h1>
-    <PostList />  {/* Add this line here */}
-  </div>
-);   
-    }}>
-      <h1>Task 17.1: All Exercises Complete</h1>
-      
-      <section style={{ border: '1px solid #888', margin: '10px 0', padding: '15px' }}>
-        <h3>1. Counter & Title Sync</h3>
-        <button onClick={() => setCount(count + 1)}>Increment ({count})</button>
-      </section>
+    <Router>
+      <div style={appStyle}>
+        <nav style={{ padding: '20px', borderBottom: '1px solid #444', display: 'flex', justifyContent: 'space-between' }}>
+          <div>
+            <Link to="/" style={{ marginRight: '15px', color: 'inherit' }}>Home</Link>
+            <Link to="/posts" style={{ marginRight: '15px', color: 'inherit' }}>Posts</Link>
+            <Link to="/create" style={{ marginRight: '15px', color: 'inherit' }}>Create</Link>
+            <Link to="/about" style={{ color: 'inherit' }}>About</Link>
+          </div>
+          
+          {/* Using your custom hook logic here */}
+          <Button onClick={toggleTheme} variant="secondary">
+            {theme === 'light' ? '🌙 Dark Mode' : '☀️ Light Mode'}
+          </Button>
+        </nav>
 
-      <section style={{ border: '1px solid #888', margin: '10px 0', padding: '15px' }}>
-        <h3>2. Window Width & Timer (Cleanup)</h3>
-        <p>Width: {windowWidth}px | Time on Page: {seconds}s</p>
-      </section>
-
-      <section style={{ border: '1px solid #888', margin: '10px 0', padding: '15px' }}>
-        <h3>3. Theme Toggle (LocalStorage)</h3>
-        <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
-          Switch to {theme === 'light' ? 'Dark' : 'Light'} Mode
-        </button>
-      </section>
-    </div>
+        <main style={{ padding: '20px' }}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/posts" element={<PostList />} />
+            <Route path="/create" element={<CreatePost />} />
+            <Route path="/about" element={<About />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
   );
 }
 
