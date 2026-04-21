@@ -1,51 +1,67 @@
 import { useState, useEffect } from 'react';
 
 function App() {
+  // State for all 17.1 Exercises
   const [count, setCount] = useState(0);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [seconds, setSeconds] = useState(0);
+  const [theme, setTheme] = useState(() => {
+    // Pattern 3: Get initial state from localStorage
+    return localStorage.getItem('theme') || 'light';
+  });
 
-  // 1. Update the tab title whenever 'count' changes
+  // Exercise 1: document.title sync (Runs when count changes)
   useEffect(() => {
     document.title = `Count: ${count}`;
-    console.log(`The count is now: ${count}`);
   }, [count]);
 
-  // 2. Event Listener: Track window width
+  // Exercise 2 - Pattern 2: Window Resize Listener
   useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-
+    const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-    // Cleanup: This removes the listener if the component unmounts
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []); // Empty array means this setup only runs ONCE on mount
+  // Exercise 2 - Pattern 3: localStorage sync
+  useEffect(() => {
+    localStorage.setItem('theme', theme);
+    document.body.className = theme; // Applies 'light' or 'dark' class to body
+  }, [theme]);
+
+  // Exercise 1 - Cleanup: The Timer
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSeconds(prev => prev + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div style={{ padding: '40px', fontFamily: 'sans-serif', textAlign: 'center' }}>
-      <h1>Week 09: React Advanced</h1>
-      <hr />
+    <div style={{ 
+      padding: '40px', 
+      minHeight: '100vh',
+      backgroundColor: theme === 'dark' ? '#333' : '#fff',
+      color: theme === 'dark' ? '#fff' : '#000',
+      transition: 'all 0.3s ease' 
+    }}>
+      <h1>Task 17.1: All Exercises Complete</h1>
       
-      <div style={{ margin: '20px 0', padding: '20px', border: '1px solid #ddd' }}>
-        <h2>Task 17.1: useEffect & State</h2>
-        <p>Current Count: <strong>{count}</strong></p>
-        <button 
-          onClick={() => setCount(count + 1)}
-          style={{ padding: '10px 20px', cursor: 'pointer' }}
-        >
-          Increment Count
-        </button>
-        <p><small>(Check the browser tab title as you click!)</small></p>
-      </div>
+      <section style={{ border: '1px solid #888', margin: '10px 0', padding: '15px' }}>
+        <h3>1. Counter & Title Sync</h3>
+        <button onClick={() => setCount(count + 1)}>Increment ({count})</button>
+      </section>
 
-      <div style={{ margin: '20px 0', padding: '20px', border: '1px solid #ddd', backgroundColor: '#f9f9f9' }}>
-        <h2>Window Width Tracker</h2>
-        <p>Your current window width is: <strong>{windowWidth}px</strong></p>
-        <p><small>Try resizing your browser window to see this update live.</small></p>
-      </div>
+      <section style={{ border: '1px solid #888', margin: '10px 0', padding: '15px' }}>
+        <h3>2. Window Width & Timer (Cleanup)</h3>
+        <p>Width: {windowWidth}px | Time on Page: {seconds}s</p>
+      </section>
+
+      <section style={{ border: '1px solid #888', margin: '10px 0', padding: '15px' }}>
+        <h3>3. Theme Toggle (LocalStorage)</h3>
+        <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+          Switch to {theme === 'light' ? 'Dark' : 'Light'} Mode
+        </button>
+      </section>
     </div>
   );
 }
