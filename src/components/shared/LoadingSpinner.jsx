@@ -1,3 +1,4 @@
+import React from 'react';
 function LoadingSpinner({ text = "Loading..." }) {
     return (
         <div style={{ textAlign: 'center', padding: '20px' }}>

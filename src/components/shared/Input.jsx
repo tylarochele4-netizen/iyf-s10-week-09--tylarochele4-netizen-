@@ -1,3 +1,4 @@
+import React from 'react';
 function Input({ label, type = 'text', value, onChange, placeholder, name, required = false }) {
   return (
     <div style={{ marginBottom: '15px', textAlign: 'left' }}>

@@ -1,3 +1,4 @@
+import React from 'react';
 function Button({ children, onClick, type = 'button', variant = 'primary', disabled = false }) {
   const styles = {
     padding: '10px 20px',
