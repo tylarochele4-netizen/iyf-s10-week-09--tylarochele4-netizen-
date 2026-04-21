@@ -1,3 +1,4 @@
+import PostList from './components/PostList';
 import { useState, useEffect } from 'react';
 
 function App() {
